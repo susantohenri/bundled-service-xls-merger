@@ -37,6 +37,7 @@ function bundled_service_xls_merger($entry_id, $form_id)
     if (bundled_service_xls_merger_form_id != $form_id) return true;
     if (!isset($_POST['bundled_children'])) return true;
     if (!isset($_POST['bundled_children']['3713'])) return true;
+    if ('Bundled Services' != $_POST['item_meta'][880]) return true;
 
     global $wpdb;
     $final_file = new Spreadsheet();
