@@ -74,6 +74,7 @@ function bundled_service_xls_merger($entry_id, $form_id)
     $final_file_name = 'Rbundle RFP';
     $final_file_name .= $is_multi_bus ? ' - Business Bundle ' : ' - Service Bundle ';
     $final_file_name .= "{$date} - {$answer_5356}";
+    if (250 < strlen($final_file_name)) $final_file_name = substr($final_file_name, 0, 250);
     $final_file_path = "{$media_path}{$final_file_name}.xlsx";
     $final_file_url = "{$media_url}{$final_file_name}.xlsx";
 
