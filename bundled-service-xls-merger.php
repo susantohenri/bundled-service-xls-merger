@@ -37,7 +37,7 @@ function bundled_service_xls_merger($entry_id, $form_id)
     if (bundled_service_xls_merger_form_id != $form_id) return true;
     if (!isset($_POST['bundled_children'])) return true;
     if (!isset($_POST['bundled_children']['3713'])) return true;
-    if ('Bundled Services' != $_POST['item_meta'][880]) return true;
+    if ('Bundle' != $_POST['item_meta'][880]) return true;
 
     global $wpdb;
     $final_file = new Spreadsheet();
@@ -75,15 +75,20 @@ function bundled_service_xls_merger($entry_id, $form_id)
     $final_file_name .= $is_multi_bus ? ' - Business Bundle ' : ' - Service Bundle ';
     $final_file_name .= "{$date} - {$answer_5356}";
     if (250 < strlen($final_file_name)) $final_file_name = substr($final_file_name, 0, 250);
-    $final_file_path = "{$media_path}{$final_file_name}.xlsx";
-    $final_file_url = "{$media_url}{$final_file_name}.xlsx";
+    $final_file_name .= '.xlsx';
+    $final_file_path = "{$media_path}{$final_file_name}";
+    $final_file_url = "{$media_url}{$final_file_name}";
 
     $writer->save($final_file_path);
+    $attachment_name = sanitize_title("{$final_file_name}");
     $final_media_id = wp_insert_post([
         'guid' => $final_file_url,
+        'post_title' => $attachment_name,
+        'post_name' => $attachment_name,
         'post_type' => 'attachment',
         'post_mime_type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     ]);
+    $wpdb->insert("{$wpdb->prefix}postmeta", ['post_id' => $final_media_id, 'meta_key' => '_wp_attached_file', 'meta_value' => "formidable/58/{$final_file_name}"]);
 
     $answer_id_5361 = $wpdb->get_var("SELECT id FROM {$wpdb->prefix}frm_item_metas WHERE item_id = {$entry_id} AND field_id = 5361");
     if ($answer_id_5361) $wpdb->update("{$wpdb->prefix}frm_item_metas", ['meta_value' => $final_media_id], ['id' => $answer_id_5361]);
