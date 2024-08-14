@@ -30,7 +30,9 @@ define('bundled_service_xls_merger_form_id', 58);
 add_action('wp_ajax_nopriv_rbundle_custom_submit_dropzone', 'FrmProFieldsController::ajax_upload');
 add_action('wp_ajax_rbundle_custom_submit_dropzone', 'FrmProFieldsController::ajax_upload');
 add_action('frm_after_create_entry', 'bundled_service_xls_merger', 30, 2);
+add_action('frm_after_create_entry', 'bundled_service_set_5349', 30, 2);
 add_action('frm_after_update_entry', 'bundled_service_xls_merger', 10, 2);
+add_action('frm_after_update_entry', 'bundled_service_set_5349', 10, 2);
 
 function bundled_service_xls_merger($entry_id, $form_id)
 {
@@ -39,12 +41,12 @@ function bundled_service_xls_merger($entry_id, $form_id)
     if (!isset($_POST['bundled_children']['3713'])) return true;
     if ('Bundle' != $_POST['item_meta'][880]) return true;
 
-    global $wpdb;
     $final_file = new Spreadsheet();
     $is_multi_bus = 1 < count($_POST['business_name']);
     $media_path = wp_get_upload_dir()['basedir'] . "/formidable/{$form_id}/";
     $media_url = site_url() . "/wp-content/uploads/formidable/{$form_id}/";
 
+    global $wpdb;
     foreach ($_POST['bundled_children']['3713'] as $media_id_sheet_name) {
         if (!strpos($media_id_sheet_name, '|')) continue;
 
@@ -97,4 +99,18 @@ function bundled_service_xls_merger($entry_id, $form_id)
         'field_id' => 5361,
         'item_id' => $entry_id
     ]);
+}
+
+function bundled_service_set_5349($entry_id, $form_id)
+{
+    if (bundled_service_xls_merger_form_id != $form_id) return true;
+    if (!isset($_POST['bundled_children'])) return true;
+    if ('Bundle' != $_POST['item_meta'][880]) return true;
+
+    global $wpdb;
+    $wpdb->update(
+        "{$wpdb->prefix}frm_item_metas",
+        ['meta_value' => serialize(json_decode($_POST['item_meta'][5349]))],
+        ['field_id' => 5349, 'item_id' => $entry_id]
+    );
 }
