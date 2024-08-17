@@ -70,13 +70,24 @@ function bundled_service_xls_merger($entry_id, $form_id)
 
     $final_file->removeSheetByIndex(0);
     $writer = new Xlsx($final_file);
-    $answer_5356 = $_POST['item_meta'][5356];
-    $date = date('d-m-Y');
+    $bc_3713 = $_POST['bundled_children']['3713'];
+    $service_count = count($bc_3713);
+    $business_count = 1;
+    $last_bc_3713 = $_POST['bundled_children'][3713][count($_POST['bundled_children'][3713]) - 1];
+    $last_bc_3713 = explode('|', $last_bc_3713);
+    $last_bc_3713 = $last_bc_3713[1];
+    $last_bc_3713 = explode(' - ', $last_bc_3713);
+    if (1 < count($last_bc_3713)) $business_count = str_replace('Bus ', '', $last_bc_3713[0]);
+    $date = date('m-d-Y');
 
-    $final_file_name = 'Rbundle RFP';
-    $final_file_name .= $is_multi_bus ? ' - Business Bundle ' : ' - Service Bundle ';
-    $final_file_name .= "{$date} - {$answer_5356}";
-    if (250 < strlen($final_file_name)) $final_file_name = substr($final_file_name, 0, 250);
+    $final_file_name = 'Rbundle RFP Bundle';
+    $final_file_name .= " - {$business_count} Business";
+    if (1 < $business_count) $final_file_name .= 'es';
+    $final_file_name .= " - {$service_count} Service";
+    if (1 < $service_count) $final_file_name .= 's';
+    $final_file_name .= " - {$date}";
+
+    if (150 < strlen($final_file_name)) $final_file_name = substr($final_file_name, 0, 150);
     $final_file_name .= '.xlsx';
     $final_file_path = "{$media_path}{$final_file_name}";
     $final_file_url = "{$media_url}{$final_file_name}";
