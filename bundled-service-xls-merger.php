@@ -42,7 +42,6 @@ function bundled_service_xls_merger($entry_id, $form_id)
     if ('Bundle' != $_POST['item_meta'][880]) return true;
 
     $final_file = new Spreadsheet();
-    $is_multi_bus = 1 < count($_POST['business_name']);
     $media_path = wp_get_upload_dir()['basedir'] . "/formidable/{$form_id}/";
     $media_url = site_url() . "/wp-content/uploads/formidable/{$form_id}/";
 
@@ -72,12 +71,7 @@ function bundled_service_xls_merger($entry_id, $form_id)
     $writer = new Xlsx($final_file);
     $bc_3713 = $_POST['bundled_children']['3713'];
     $service_count = count($bc_3713);
-    $business_count = 1;
-    $last_bc_3713 = $_POST['bundled_children'][3713][count($_POST['bundled_children'][3713]) - 1];
-    $last_bc_3713 = explode('|', $last_bc_3713);
-    $last_bc_3713 = $last_bc_3713[1];
-    $last_bc_3713 = explode(' - ', $last_bc_3713);
-    if (1 < count($last_bc_3713)) $business_count = str_replace('Bus ', '', $last_bc_3713[0]);
+    $business_count = count($_POST['business_name']);
     $date = date('m-d-Y');
 
     $final_file_name = 'Rbundle RFP Bundle';
